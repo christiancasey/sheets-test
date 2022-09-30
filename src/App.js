@@ -1,25 +1,39 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import Papa from 'papaparse';
+
 import './App.css';
 
-function App() {
+const inputCSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQxtTOpqRbGNgc0Hf40yQOI6nHXfuZCdSRbSzCs0-IdFk_zxmj4PWbSv_zUj26nreVJqXCoxjMj32B4/pub?output=csv";
+
+const MovieData = () => {
+  const [data, setData] = useState({});
+  Papa.parse(inputCSV, {
+    download: true,
+    header: true,
+    complete: (results) => {
+      setData(results.data);
+    },
+  });
+  const movies = Array.from(data);
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ul>
+      {movies.map((data) => (
+        <li key={data.movie}>
+          {data.movie} ({data.year}) - Rating {data.rating} ... {data.date}
+        </li>
+      ))}
+    </ul>
   );
-}
+};
+
+const App = props => {
+  return (
+    <MovieData />
+  );
+};
 
 export default App;
+
+
+// https://docs.google.com/spreadsheets/d/e/2PACX-1vQxtTOpqRbGNgc0Hf40yQOI6nHXfuZCdSRbSzCs0-IdFk_zxmj4PWbSv_zUj26nreVJqXCoxjMj32B4/pubhtml
